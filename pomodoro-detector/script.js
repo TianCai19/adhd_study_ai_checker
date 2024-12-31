@@ -11,6 +11,7 @@ const canvas = document.getElementById('canvas');
 const statusText = document.getElementById('status');
 let model;
 let isPhoneDetected = false;
+let phoneDetectionCount = 0;
 
 // 初始化番茄钟
 function initPomodoro() {
@@ -39,12 +40,23 @@ function startTimer() {
     }, 1000);
 }
 
+// 停止计时器
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
 // 重置计时器
 function resetTimer() {
-    clearInterval(timerInterval);
-    timerInterval = null;
+    stopTimer();
     timeLeft = 25 * 60;
     updateTimerDisplay();
+    phoneDetectionCount = 0;
+    statusText.textContent = '未检测到手机';
+    statusText.style.color = 'green';
+    statusText.classList.remove('detected');
 }
 
 // 初始化摄像头
@@ -175,8 +187,17 @@ function checkForPhone(predictions) {
 
     if (detected !== isPhoneDetected) {
         isPhoneDetected = detected;
-        statusText.textContent = detected ? '检测到手机使用！' : '未检测到手机';
-        statusText.style.color = detected ? 'red' : 'green';
+        if (detected) {
+            phoneDetectionCount++;
+            stopTimer();
+            statusText.textContent = `检测到手机使用！ (次数: ${phoneDetectionCount})`;
+            statusText.style.color = 'red';
+            statusText.classList.add('detected');
+        } else {
+            statusText.textContent = '未检测到手机';
+            statusText.style.color = 'green';
+            statusText.classList.remove('detected');
+        }
     }
 }
 
