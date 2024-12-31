@@ -1,0 +1,2 @@
+pomodoro-detector/phone1.jpg: 检测到手机 (cellular_telephone, 54.11%)
+pomodoro-detector/phone2.jpeg: 未检测到手机 (无, 0.00%)
